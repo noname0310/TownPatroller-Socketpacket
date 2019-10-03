@@ -10,7 +10,7 @@ namespace TPPacket.Serializer
         private int PacketBufferSize;//1024 * 3
         private int SegmentBufferSize;//1024 * 4
         private MemoryStream SerializeMS;
-        private int SegmentCount;
+        public int SegmentCount;
         private int CourrentCount;
         public int CourrentSegmentID;
 
@@ -31,12 +31,12 @@ namespace TPPacket.Serializer
             bf.Serialize(SerializeMS, obj);
             SerializeMS.Position = 0;//
 
-            SegmentCount = (int)Math.Ceiling(SerializeMS.Length/PacketBufferSize + 0D);
+            SegmentCount = (int)Math.Ceiling((double)SerializeMS.Length/(double)SegmentBufferSize);
             CourrentCount = 0;
             CourrentSegmentID++;
         }
 
-        private void SerializeSingle(byte[] buffer, object obj)//buffer = out
+        public void SerializeSingle(byte[] buffer, object obj)//buffer = out
         {
             MemoryStream ms = new MemoryStream();
             BinaryFormatter bf = new BinaryFormatter();
@@ -44,15 +44,18 @@ namespace TPPacket.Serializer
             bf.Serialize(ms, obj);
             ms.Position = 0;
 
-            if(ms.Read(buffer, 0, buffer.Length) != 0)
+            if (ms.Length > buffer.Length)
             {
-                throw new SystemException("buffer is too small to serialize object!");
+                throw new SystemException("buffer is too small to serialize object! memorystream (" + ms.Length + " byte)" + " buffer (" + buffer.Length + " byte)");
             }
+
+            ms.Read(buffer, 0, buffer.Length);
+
             ms.Close();
             ms.Dispose();
         }
 
-        public int GetSerializedSegment(byte[] buffer)//buffer = out, 1024 * 3
+        public int GetSerializedSegment(byte[] buffer)//buffer = out, 1024 * 4
         {
             CourrentCount++;
 
