@@ -19,6 +19,18 @@ namespace TPPacket.Serializer
             return (BasePacket)Deserialize(BufferStream);
         }
 
+        public static object Deserialize(byte[] buffer)
+        {
+            MemoryStream BufferStream = new MemoryStream();
+            BufferStream.Write(buffer, 0, buffer.Length);
+            BufferStream.Position = 0;
+
+            BinaryFormatter bf = new BinaryFormatter();
+            object obj = bf.Deserialize(BufferStream);
+            BufferStream.Close();
+            return obj;
+        }
+
         private static object Deserialize(MemoryStream DeserializeMS)
         {
             DeserializeMS.Position = 0;

@@ -5,20 +5,15 @@ namespace TPPacket.Packet
     [Serializable]
     public class BasePacket
     {
-        protected Segment segmentInfo;
-        protected PacketType packetType;
-
-        public Segment Segmentinfo
+        public PacketType packetType
         {
             get
             {
-                return segmentInfo;
-            }
-            set
-            {
-                segmentInfo = value;
+                return _packetType;
             }
         }
+
+        protected PacketType _packetType;
 
         public BasePacket()
         {
@@ -34,7 +29,9 @@ namespace TPPacket.Packet
         CarStatus,
         CarStatusChanged,
         UpdateDataReq,
-        UpdateChanged,
+        UpdateDataChanged,
+        UpdateConsoleModeReq,
+        UpdateConsoleModeChanged,
         UniversalCommand
     }
 
@@ -54,5 +51,12 @@ namespace TPPacket.Packet
         Pressing,
         ConsoleMsg,
         Command
+    }
+
+    [Serializable]
+    public enum ConsoleMode
+    {
+        ViewBotList,
+        ViewSingleBot
     }
 }

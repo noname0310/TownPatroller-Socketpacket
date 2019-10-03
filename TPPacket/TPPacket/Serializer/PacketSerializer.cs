@@ -12,7 +12,7 @@ namespace TPPacket.Serializer
         private MemoryStream SerializeMS;
         private int SegmentCount;
         private int CourrentCount;
-        private int CourrentSegmentID;
+        public int CourrentSegmentID;
 
         public PacketSerializer(int _PacketBufferSize, int _SegmentBufferSize)
         {

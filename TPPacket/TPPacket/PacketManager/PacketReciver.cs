@@ -8,13 +8,15 @@ namespace TPPacket.PacketManager
 {
     public class PacketReciver
     {
-        public delegate void DataInvoked(BasePacket basePacket);
+        public delegate void DataInvoked(ulong Id, BasePacket basePacket);
         public event DataInvoked OnDataInvoke;
 
+        public readonly ulong Id;
         private Dictionary<int, SegmentCollecter> segmentCollecters;
 
-        public PacketReciver()
+        public PacketReciver(ulong _Id)
         {
+            Id = _Id;
             segmentCollecters = new Dictionary<int, SegmentCollecter>();
         }
 
@@ -33,7 +35,7 @@ namespace TPPacket.PacketManager
 
         private void PacketReciver_OnDataInvoke(BasePacket basePacket, int segmentID)
         {
-            OnDataInvoke?.Invoke(basePacket);
+            OnDataInvoke?.Invoke(Id, basePacket);
             segmentCollecters.Remove(segmentID);
         }
     }

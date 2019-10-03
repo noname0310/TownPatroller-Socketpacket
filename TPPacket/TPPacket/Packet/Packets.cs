@@ -8,16 +8,20 @@ namespace TPPacket.Packet
     public class ConnectionPacket : BasePacket
     {
         public readonly bool IsConnecting;
+        public readonly ulong ClientId;
+        public readonly bool IsBot;
 
         private ConnectionPacket()
         {
             
         }
 
-        public ConnectionPacket(bool _IsConnecting)
+        public ConnectionPacket(bool _IsConnecting,  ulong _ClientId, bool _IsBot)
         {
-            packetType = PacketType.ConnectionStat;
+            _packetType = PacketType.ConnectionStat;
             IsConnecting = _IsConnecting;
+            ClientId = _ClientId;
+            IsBot = _IsBot;
         }
     }
 
@@ -33,7 +37,7 @@ namespace TPPacket.Packet
 
         public CamPacket(Texture _CamFrame)
         {
-            packetType = PacketType.CamFrame;
+            _packetType = PacketType.CamFrame;
             CamFrame = _CamFrame;
         }
     }
@@ -53,7 +57,7 @@ namespace TPPacket.Packet
 
         public CarStatusPacket(Cardevice _cardevice, GPSPosition _position, float _rotation, GPSSpotManager _gPSMover)
         {
-            packetType = PacketType.CarStatus;
+            _packetType = PacketType.CarStatus;
             cardevice = _cardevice;
             position = _position;
             rotation = _rotation;
@@ -66,7 +70,7 @@ namespace TPPacket.Packet
     {
         public CarStatusUpdatedPacket()
         {
-            packetType = PacketType.CarStatusChanged;
+            _packetType = PacketType.CarStatusChanged;
         }
     }
 
@@ -82,7 +86,7 @@ namespace TPPacket.Packet
 
         public DataUpdatePacket(ModeType _modeType)
         {
-            packetType = PacketType.UpdateDataReq;
+            _packetType = PacketType.UpdateDataReq;
             modeType = _modeType;
         }
     }
@@ -92,7 +96,35 @@ namespace TPPacket.Packet
     {
         public DataUpdatedPacket()
         {
-            packetType = PacketType.UpdateChanged;
+            _packetType = PacketType.UpdateDataChanged;
+        }
+    }
+
+    [Serializable]
+    public class ConsoleUpdatePacket : BasePacket
+    {
+        public readonly ConsoleMode consoleMode;
+        public readonly ulong TargetBot = 0;
+
+        private ConsoleUpdatePacket()
+        {
+
+        }
+
+        public ConsoleUpdatePacket(ConsoleMode _consoleMode, ulong _TargetBot)
+        {
+            _packetType = PacketType.UpdateConsoleModeReq;
+            consoleMode = _consoleMode;
+            TargetBot = _TargetBot;
+        }
+    }
+
+    [Serializable]
+    public class ConsoleUpdatedPacket : BasePacket
+    {
+        public ConsoleUpdatedPacket()
+        {
+            _packetType = PacketType.UpdateConsoleModeChanged;
         }
     }
 
@@ -109,7 +141,7 @@ namespace TPPacket.Packet
 
         public UniversalCommandPacket(KeyType _keyType, string _key)
         {
-            packetType = PacketType.UniversalCommand;
+            _packetType = PacketType.UniversalCommand;
             keyType = _keyType;
             key = _key;
         }
