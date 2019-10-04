@@ -28,8 +28,11 @@ namespace TPPacket.PacketManager
             }
             else
             {
-                segmentCollecters.Add(segment.SegmentID, new SegmentCollecter(segment));
-                segmentCollecters[segment.SegmentID].OnDataInvoke += PacketReciver_OnDataInvoke;
+                SegmentCollecter segmentCollecter = new SegmentCollecter(segment.SegmentCount);
+                segmentCollecter.OnDataInvoke += PacketReciver_OnDataInvoke;
+
+                segmentCollecter.AddSegment(segment);
+                segmentCollecters.Add(segment.SegmentID, segmentCollecter);
             }
         }
 

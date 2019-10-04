@@ -15,17 +15,10 @@ namespace TPPacket.PacketManager
         private Segment[] segments;
         private int AddCount;
 
-        private SegmentCollecter()
-        {
-
-        }
-
-        public SegmentCollecter(Segment _segment)
+        public SegmentCollecter(int segmentcount)
         {
             AddCount = 0;
-            segments = new Segment[_segment.SegmentCount];
-
-            AddSegment(_segment);
+            segments = new Segment[segmentcount];
         }
 
         public void AddSegment(Segment _segment)

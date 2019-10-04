@@ -10,6 +10,7 @@ namespace TPPacket.Packet
         public readonly bool IsConnecting;
         public readonly ulong ClientId;
         public readonly bool IsBot;
+        public readonly bool HasError;
 
         private ConnectionPacket()
         {
@@ -22,6 +23,16 @@ namespace TPPacket.Packet
             IsConnecting = _IsConnecting;
             ClientId = _ClientId;
             IsBot = _IsBot;
+            HasError = false;
+        }
+
+        public ConnectionPacket(bool _IsConnecting, ulong _ClientId, bool _IsBot, bool _HasError)
+        {
+            _packetType = PacketType.ConnectionStat;
+            IsConnecting = _IsConnecting;
+            ClientId = _ClientId;
+            IsBot = _IsBot;
+            HasError = _HasError;
         }
     }
 
