@@ -71,6 +71,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y $(TargetPath) $(SolutionDir)\..\..\TownPatroller-Server\TownPatroller\Assets\Plugins
-copy /Y $(TargetPath) $(SolutionDir)\..\..\TownPatroller-HardwareClient\TownPatroller\Assets\Plugins</PostBuildEvent>
+copy /Y $(TargetPath) $(SolutionDir)\..\..\TownPatroller-HardwareClient\TownPatroller\Assets\Plugins
+copy /Y $(TargetPath) $(SolutionDir)\..\..\TownPatroller-ConsoleClient\TownPatroller\Assets\Plugins</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -26,13 +26,25 @@ namespace TPPacket.Packet
     {
         ConnectionStat,
         CamFrame,
+        CamConfig,
+        CamReceived,
         CarStatus,
+        CarGPSSpotStatus,
+        CarStatusChangeReq,
+        CarGPSSpotStatusChangeReq,
         CarStatusChanged,
         UpdateDataReq,
         UpdateDataChanged,
         UpdateConsoleModeReq,
         UpdateConsoleModeChanged,
         UniversalCommand
+    }
+
+    [Serializable]
+    public enum CamaraConfigType
+    {
+        ChangeCamara,
+        SendFrame
     }
 
     [Serializable]
@@ -58,5 +70,23 @@ namespace TPPacket.Packet
     {
         ViewBotList,
         ViewSingleBot
+    }
+
+    [Serializable]
+    public enum CarMember
+    {
+        f_sonardist,
+        rh_sonardist,
+        lh_sonardist,
+        rs_sonardist,
+        ls_sonardist,
+        r_motorpower,
+        l_motorpower,
+        r_motorDIR,
+        l_motorDIR,
+        rf_LED,
+        lf_LED,
+        rb_LED,
+        lb_LED
     }
 }

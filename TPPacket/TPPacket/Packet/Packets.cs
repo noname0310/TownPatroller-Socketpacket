@@ -39,17 +39,45 @@ namespace TPPacket.Packet
     [Serializable]
     public class CamPacket : BasePacket
     {
-        public readonly Texture CamFrame;
+        public readonly byte[] CamFrame;
 
         private CamPacket()
         {
             
         }
 
-        public CamPacket(Texture _CamFrame)
+        public CamPacket(byte[] _CamFrame)
         {
             _packetType = PacketType.CamFrame;
             CamFrame = _CamFrame;
+        }
+    }
+
+    [Serializable]
+    public class CamConfigPacket : BasePacket
+    {
+        public readonly CamaraConfigType camaraConfigType;
+        public readonly bool enable;
+
+        private CamConfigPacket()
+        {
+
+        }
+
+        public CamConfigPacket(CamaraConfigType _camaraConfigType, bool _enable)
+        {
+            _packetType = PacketType.CamConfig;
+            camaraConfigType = _camaraConfigType;
+            enable = _enable;
+        }
+    }
+
+    [Serializable]
+    public class CamPacketRecived : BasePacket
+    {
+        public CamPacketRecived()
+        {
+            _packetType = PacketType.CamReceived;
         }
     }
 
@@ -59,19 +87,74 @@ namespace TPPacket.Packet
         public readonly Cardevice cardevice;
         public readonly GPSPosition position;
         public readonly float rotation;
-        public readonly GPSSpotManager gPSMover;
 
         private CarStatusPacket()
         {
             
         }
 
-        public CarStatusPacket(Cardevice _cardevice, GPSPosition _position, float _rotation, GPSSpotManager _gPSMover)
+        public CarStatusPacket(Cardevice _cardevice, GPSPosition _position, float _rotation)
         {
             _packetType = PacketType.CarStatus;
             cardevice = _cardevice;
             position = _position;
             rotation = _rotation;
+        }
+    }
+
+    [Serializable]
+    public class CarGPSSpotStatusPacket : BasePacket
+    {
+        public readonly GPSSpotManager gPSMover;
+
+        private CarGPSSpotStatusPacket()
+        {
+
+        }
+
+        public CarGPSSpotStatusPacket(GPSSpotManager _gPSMover)
+        {
+            _packetType = PacketType.CarGPSSpotStatus;
+            gPSMover = _gPSMover;
+        }
+    }
+
+    [Serializable]
+    public class CarStatusChangeReqPacket : BasePacket
+    {
+        public CarMember carMember;
+        public ushort ushortvalue;
+        public byte bytevalue;
+        public bool boolvalue;
+
+        private CarStatusChangeReqPacket()
+        {
+
+        }
+
+        public CarStatusChangeReqPacket(CarMember _carMember, ushort _ushortvalue, byte _bytevalue, bool _boolvalue)
+        {
+            _packetType = PacketType.CarGPSSpotStatusChangeReq;
+            carMember = _carMember;
+            ushortvalue = _ushortvalue;
+            bytevalue = _bytevalue;
+            boolvalue = _boolvalue;
+        }
+    }
+
+    [Serializable]
+    public class CarGPSSpotStatusChangeReqPacket : BasePacket
+    {
+        public GPSSpotManager gPSMover;
+
+        private CarGPSSpotStatusChangeReqPacket()
+        {
+
+        }
+
+        public CarGPSSpotStatusChangeReqPacket(GPSSpotManager _gPSMover)
+        {
+            _packetType = PacketType.CarStatusChangeReq;
             gPSMover = _gPSMover;
         }
     }
@@ -105,9 +188,17 @@ namespace TPPacket.Packet
     [Serializable]
     public class DataUpdatedPacket : BasePacket
     {
-        public DataUpdatedPacket()
+        public readonly ModeType modeType;
+
+        private DataUpdatedPacket()
+        {
+
+        }
+
+        public DataUpdatedPacket(ModeType _modeType)
         {
             _packetType = PacketType.UpdateDataChanged;
+            modeType = _modeType;
         }
     }
 

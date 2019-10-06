@@ -31,9 +31,12 @@ namespace TPPacket.Serializer
             bf.Serialize(SerializeMS, obj);
             SerializeMS.Position = 0;//
 
-            SegmentCount = (int)Math.Ceiling((double)SerializeMS.Length/(double)SegmentBufferSize);
+            SegmentCount = (int)Math.Ceiling((double)SerializeMS.Length/(double)PacketBufferSize);
             CourrentCount = 0;
-            CourrentSegmentID++;
+            if (CourrentSegmentID == 1000)
+                CourrentSegmentID = 1;
+            else
+                CourrentSegmentID++;
         }
 
         public void SerializeSingle(byte[] buffer, object obj)//buffer = out

@@ -13,6 +13,7 @@ namespace TPPacket.PacketManager
 
         public readonly ulong Id;
         private Dictionary<int, SegmentCollecter> segmentCollecters;
+        private SegmentCollecter LastCollecter;
 
         public PacketReciver(ulong _Id)
         {
@@ -22,6 +23,24 @@ namespace TPPacket.PacketManager
 
         public void AddSegment(Segment segment)
         {
+            if(segment.SegmentID == 1000)
+            {
+                if (segmentCollecters.Count > 0)
+                    segmentCollecters.Clear();
+
+                if(LastCollecter == null)
+                {
+                    LastCollecter = new SegmentCollecter(segment.SegmentCount);
+                    LastCollecter.OnDataInvoke += PacketReciver_OnDataInvoke;
+                }
+                LastCollecter.AddSegment(segment);
+            }
+
+            if(segment.SegmentID == 1)
+            {
+                LastCollecter = null;
+            }
+
             if(segmentCollecters.ContainsKey(segment.SegmentID))
             {
                 segmentCollecters[segment.SegmentID].AddSegment(segment);
