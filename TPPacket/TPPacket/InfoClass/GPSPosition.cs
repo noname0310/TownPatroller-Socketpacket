@@ -8,16 +8,13 @@ namespace TPPacket.Class
     [Serializable]
     public class GPSPosition
     {
-        public float latitude { get; set; }
-        public float longitude { get; set; }
+        public readonly string LocationName;
+        public readonly float latitude;
+        public readonly float longitude;
 
-        public GPSPosition()
+        public GPSPosition(string locationName, float lati, float longi)
         {
-
-        }
-
-        public GPSPosition(float lati, float longi)
-        {
+            LocationName = locationName;
             latitude = lati;
             longitude = longi;
         }

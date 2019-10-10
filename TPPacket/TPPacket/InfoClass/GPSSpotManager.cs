@@ -8,11 +8,13 @@ namespace TPPacket.Class
     [Serializable]
     public class GPSSpotManager
     {
-        private List<GPSPosition> GPSPositions { get; set; }
+        public List<GPSPosition> GPSPositions { get; private set; }
+        public int CurrentMovePosIndex { get; private set; }
 
-        public GPSSpotManager()
+        public GPSSpotManager(int _CurrentMovePosIndex)
         {
             GPSPositions = new List<GPSPosition>();
+            CurrentMovePosIndex = _CurrentMovePosIndex;
         }
 
         public void AddPos(GPSPosition gPSPosition)

@@ -9,7 +9,7 @@ namespace TPPacket.Serializer
     {
         private int PacketBufferSize;//1024 * 3
         private int SegmentBufferSize;//1024 * 4
-        private MemoryStream SerializeMS;
+        public MemoryStream SerializeMS;
         public int SegmentCount;
         private int CourrentCount;
         public int CourrentSegmentID;
@@ -25,6 +25,9 @@ namespace TPPacket.Serializer
 
         public void Serialize(object obj)
         {
+            if(SerializeMS != null)
+                SerializeMS.Dispose();
+            
             SerializeMS = new MemoryStream();
             BinaryFormatter bf = new BinaryFormatter();
 
@@ -39,7 +42,7 @@ namespace TPPacket.Serializer
                 CourrentSegmentID++;
         }
 
-        public void SerializeSingle(byte[] buffer, object obj)//buffer = out
+        public long SerializeSingle(byte[] buffer, object obj)//buffer = out
         {
             MemoryStream ms = new MemoryStream();
             BinaryFormatter bf = new BinaryFormatter();
@@ -54,8 +57,12 @@ namespace TPPacket.Serializer
 
             ms.Read(buffer, 0, buffer.Length);
 
+            long size = ms.Length;
+
             ms.Close();
             ms.Dispose();
+
+            return size;
         }
 
         public int GetSerializedSegment(byte[] buffer)//buffer = out, 1024 * 4
