@@ -32,7 +32,7 @@ namespace TPPacket.Serializer
             BinaryFormatter bf = new BinaryFormatter();
 
             bf.Serialize(SerializeMS, obj);
-            SerializeMS.Position = 0;//
+            SerializeMS.Position = 0;
 
             SegmentCount = (int)Math.Ceiling((double)SerializeMS.Length/(double)PacketBufferSize);
             CourrentCount = 0;

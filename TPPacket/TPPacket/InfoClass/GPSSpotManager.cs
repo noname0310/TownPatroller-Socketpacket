@@ -17,6 +17,18 @@ namespace TPPacket.Class
             CurrentMovePosIndex = _CurrentMovePosIndex;
         }
 
+        public void MoveNext()
+        {
+            if (CurrentMovePosIndex == GPSPositions.Count - 1)
+            {
+                CurrentMovePosIndex = 0;
+            }
+            else
+            {
+                CurrentMovePosIndex++;
+            }
+        }
+
         public void AddPos(GPSPosition gPSPosition)
         {
             GPSPositions.Add(gPSPosition);
