@@ -251,4 +251,30 @@ namespace TPPacket.Packet
             key = _key;
         }
     }
+
+    [Serializable]
+    public class ClientinfoReqPacket : BasePacket
+    {
+        public ClientinfoReqPacket()
+        {
+            _packetType = PacketType.ClientsInfoReq;
+        }
+    }
+
+    [Serializable]
+    public class ClientinfoPacket : BasePacket
+    {
+        public readonly ClientInfo[] ClientsInfo;
+        
+        private ClientinfoPacket()
+        {
+
+        }
+
+        public ClientinfoPacket(ClientInfo[] clientsInfo)
+        {
+            _packetType = PacketType.ClientsInfo;
+            ClientsInfo = clientsInfo;
+        }
+    }
 }

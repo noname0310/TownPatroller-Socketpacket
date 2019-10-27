@@ -38,7 +38,9 @@ namespace TPPacket.Packet
         UpdateDataChanged,
         UpdateConsoleModeReq,
         UpdateConsoleModeChanged,
-        UniversalCommand
+        UniversalCommand,
+        ClientsInfoReq,
+        ClientsInfo
     }
 
     [Serializable]
