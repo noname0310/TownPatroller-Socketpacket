@@ -227,9 +227,17 @@ namespace TPPacket.Packet
     [Serializable]
     public class ConsoleUpdatedPacket : BasePacket
     {
-        public ConsoleUpdatedPacket()
+        public readonly ConsoleMode consoleMode;
+
+        private ConsoleUpdatedPacket()
+        {
+
+        }
+
+        public ConsoleUpdatedPacket(ConsoleMode _consoleMode)
         {
             _packetType = PacketType.UpdateConsoleModeChanged;
+            consoleMode = _consoleMode;
         }
     }
 
