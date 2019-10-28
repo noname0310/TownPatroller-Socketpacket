@@ -131,17 +131,17 @@ namespace TPPacket.Packet
     [Serializable]
     public class CarStatusChangeReqPacket : BasePacket
     {
-        public Cardevice Cardevice;
+        public ReqCarDevice ReqCarDevice;
 
         private CarStatusChangeReqPacket()
         {
 
         }
 
-        public CarStatusChangeReqPacket(Cardevice cardevice)
+        public CarStatusChangeReqPacket(ReqCarDevice reqCarDevice)
         {
             _packetType = PacketType.CarStatusChangeReq;
-            Cardevice = cardevice;
+            ReqCarDevice = reqCarDevice;
         }
     }
 

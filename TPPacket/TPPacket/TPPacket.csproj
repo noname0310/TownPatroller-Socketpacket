@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InfoClass\ClientInfo.cs" />
+    <Compile Include="InfoClass\ReqCarDevice.cs" />
     <Compile Include="PacketManager\PacketReciver.cs" />
     <Compile Include="PacketManager\SegmentCollecter.cs" />
     <Compile Include="Packet\BasePacket.cs" />
