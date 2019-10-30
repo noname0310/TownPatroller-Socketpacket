@@ -23,10 +23,21 @@ namespace TPPacket.Serializer
             CourrentSegmentID = 0;
         }
 
+        ~PacketSerializer()
+        {
+            SerializeMS.Close();
+            SerializeMS.Dispose();
+            SerializeMS = null;
+        }
+
         public void Serialize(object obj)
         {
-            if(SerializeMS != null)
+            if (SerializeMS != null)
+            {
+                SerializeMS.Close();
                 SerializeMS.Dispose();
+                SerializeMS = null;
+            }
             
             SerializeMS = new MemoryStream();
             BinaryFormatter bf = new BinaryFormatter();

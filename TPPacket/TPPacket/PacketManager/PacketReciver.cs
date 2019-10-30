@@ -23,7 +23,7 @@ namespace TPPacket.PacketManager
 
         public void AddSegment(Segment segment)
         {
-            if(segment.SegmentID == 1000)
+            if(segment.SegmentID >= 1000)
             {
                 if (segmentCollecters.Count > 0)
                     segmentCollecters.Clear();
@@ -34,6 +34,7 @@ namespace TPPacket.PacketManager
                     LastCollecter.OnDataInvoke += PacketReciver_OnDataInvoke;
                 }
                 LastCollecter.AddSegment(segment);
+                return;
             }
 
             if(segment.SegmentID == 1)
