@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace TPPacket.Class
 {
@@ -9,12 +7,23 @@ namespace TPPacket.Class
     public class GPSSpotManager
     {
         public List<GPSPosition> GPSPositions { get; private set; }
-        public int CurrentMovePosIndex { get; private set; }
+        public int CurrentMovePosIndex { get; set; }
 
         public GPSSpotManager(int _CurrentMovePosIndex)
         {
             GPSPositions = new List<GPSPosition>();
             CurrentMovePosIndex = _CurrentMovePosIndex;
+        }
+
+        private GPSSpotManager(List<GPSPosition> gPSPositions, int _CurrentMovePosIndex)
+        {
+            GPSPositions = gPSPositions;
+            CurrentMovePosIndex = _CurrentMovePosIndex;
+        }
+
+        public GPSSpotManager Clone()
+        {
+            return new GPSSpotManager(GPSPositions, CurrentMovePosIndex);
         }
 
         public void MoveNext()
@@ -32,6 +41,16 @@ namespace TPPacket.Class
         public void AddPos(GPSPosition gPSPosition)
         {
             GPSPositions.Add(gPSPosition);
+        }
+
+        public void AddPos(string LocationName, float latitude, float longitude)
+        {
+            GPSPositions.Add(new GPSPosition(LocationName, latitude, longitude));
+        }
+
+        public void RemovePos(int index)
+        {
+            GPSPositions.RemoveAt(index);
         }
 
         public GPSPosition RemoveLastPos()

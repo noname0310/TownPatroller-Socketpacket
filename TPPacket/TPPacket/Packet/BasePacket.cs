@@ -33,7 +33,6 @@ namespace TPPacket.Packet
         CarGPSSpotStatus,
         CarStatusChangeReq,
         CarGPSSpotStatusChangeReq,
-        CarGPSSpotStatusChanged,
         UpdateDataReq,
         UpdateDataChanged,
         UpdateConsoleModeReq,
@@ -48,6 +47,15 @@ namespace TPPacket.Packet
     {
         ChangeCamara,
         SendFrame
+    }
+
+    [Serializable]
+    public enum GPSSpotManagerChangeType
+    {
+        AddSpot,
+        RemoveSpot,
+        SetCurrentPos,
+        OverWrite
     }
 
     [Serializable]

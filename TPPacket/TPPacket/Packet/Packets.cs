@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 using TPPacket.Class;
 
 namespace TPPacket.Packet
@@ -14,21 +13,19 @@ namespace TPPacket.Packet
 
         private ConnectionPacket()
         {
-            
+            _packetType = PacketType.ConnectionStat;
         }
 
-        public ConnectionPacket(bool _IsConnecting,  ulong _ClientId, bool _IsBot)
+        public ConnectionPacket(bool _IsConnecting,  ulong _ClientId, bool _IsBot) : this()
         {
-            _packetType = PacketType.ConnectionStat;
             IsConnecting = _IsConnecting;
             ClientId = _ClientId;
             IsBot = _IsBot;
             HasError = false;
         }
 
-        public ConnectionPacket(bool _IsConnecting, ulong _ClientId, bool _IsBot, bool _HasError)
+        public ConnectionPacket(bool _IsConnecting, ulong _ClientId, bool _IsBot, bool _HasError) : this()
         {
-            _packetType = PacketType.ConnectionStat;
             IsConnecting = _IsConnecting;
             ClientId = _ClientId;
             IsBot = _IsBot;
@@ -43,12 +40,11 @@ namespace TPPacket.Packet
 
         private CamPacket()
         {
-            
+            _packetType = PacketType.CamFrame;
         }
 
-        public CamPacket(byte[] _CamFrame)
+        public CamPacket(byte[] _CamFrame) : this()
         {
-            _packetType = PacketType.CamFrame;
             CamFrame = _CamFrame;
         }
     }
@@ -61,12 +57,11 @@ namespace TPPacket.Packet
 
         private CamConfigPacket()
         {
-
+            _packetType = PacketType.CamConfig;
         }
 
-        public CamConfigPacket(CamaraConfigType _camaraConfigType, bool _enable)
+        public CamConfigPacket(CamaraConfigType _camaraConfigType, bool _enable) : this()
         {
-            _packetType = PacketType.CamConfig;
             camaraConfigType = _camaraConfigType;
             enable = _enable;
         }
@@ -90,12 +85,11 @@ namespace TPPacket.Packet
 
         private CarStatusPacket()
         {
-            
+            _packetType = PacketType.CarStatus;
         }
 
-        public CarStatusPacket(Cardevice _cardevice, GPSPosition _position, float _rotation)
+        public CarStatusPacket(Cardevice _cardevice, GPSPosition _position, float _rotation) : this()
         {
-            _packetType = PacketType.CarStatus;
             cardevice = _cardevice;
             position = _position;
             rotation = _rotation;
@@ -114,33 +108,52 @@ namespace TPPacket.Packet
     [Serializable]
     public class CarGPSSpotStatusPacket : BasePacket
     {
-        public readonly GPSSpotManager gPSMover;
+        public readonly GPSSpotManagerChangeType GPSSpotManagerChangeType;
+        public readonly int Index;
+        public readonly GPSSpotManager GPSMover;
+        public readonly GPSPosition GPSPosition;
 
         private CarGPSSpotStatusPacket()
         {
-
+            _packetType = PacketType.CarGPSSpotStatus;
         }
 
-        public CarGPSSpotStatusPacket(GPSSpotManager _gPSMover)
+        public CarGPSSpotStatusPacket(GPSSpotManagerChangeType gPSSpotManagerChangeType, object value) : this()
         {
-            _packetType = PacketType.CarGPSSpotStatus;
-            gPSMover = _gPSMover;
+            GPSSpotManagerChangeType = gPSSpotManagerChangeType;
+
+            switch (gPSSpotManagerChangeType)
+            {
+                case GPSSpotManagerChangeType.AddSpot:
+                    GPSPosition = value as GPSPosition;
+                    break;
+                case GPSSpotManagerChangeType.RemoveSpot:
+                    Index = (int)value;
+                    break;
+                case GPSSpotManagerChangeType.SetCurrentPos:
+                    Index = (int)value;
+                    break;
+                case GPSSpotManagerChangeType.OverWrite:
+                    GPSMover = value as GPSSpotManager;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
     [Serializable]
     public class CarStatusChangeReqPacket : BasePacket
     {
-        public ReqCarDevice ReqCarDevice;
+        public readonly ReqCarDevice ReqCarDevice;
 
         private CarStatusChangeReqPacket()
         {
-
+            _packetType = PacketType.CarStatusChangeReq;
         }
 
-        public CarStatusChangeReqPacket(ReqCarDevice reqCarDevice)
+        public CarStatusChangeReqPacket(ReqCarDevice reqCarDevice) : this()
         {
-            _packetType = PacketType.CarStatusChangeReq;
             ReqCarDevice = reqCarDevice;
         }
     }
@@ -148,26 +161,37 @@ namespace TPPacket.Packet
     [Serializable]
     public class CarGPSSpotStatusChangeReqPacket : BasePacket
     {
-        public GPSSpotManager gPSMover;
+        public readonly GPSSpotManagerChangeType GPSSpotManagerChangeType;
+        public readonly int Index;
+        public readonly GPSSpotManager GPSMover;
+        public readonly GPSPosition GPSPosition;
 
         private CarGPSSpotStatusChangeReqPacket()
         {
-
-        }
-
-        public CarGPSSpotStatusChangeReqPacket(GPSSpotManager _gPSMover)
-        {
             _packetType = PacketType.CarGPSSpotStatusChangeReq;
-            gPSMover = _gPSMover;
         }
-    }
 
-    [Serializable]
-    public class CarGPSStatusUpdatedPacket : BasePacket
-    {
-        public CarGPSStatusUpdatedPacket()
+        public CarGPSSpotStatusChangeReqPacket(GPSSpotManagerChangeType gPSSpotManagerChangeType, object value) : this()
         {
-            _packetType = PacketType.CarGPSSpotStatusChanged;
+            GPSSpotManagerChangeType = gPSSpotManagerChangeType;
+
+            switch (gPSSpotManagerChangeType)
+            {
+                case GPSSpotManagerChangeType.AddSpot:
+                    GPSPosition = value as GPSPosition;
+                    break;
+                case GPSSpotManagerChangeType.RemoveSpot:
+                    Index = (int)value;
+                    break;
+                case GPSSpotManagerChangeType.SetCurrentPos:
+                    Index = (int)value;
+                    break;
+                case GPSSpotManagerChangeType.OverWrite:
+                    GPSMover = value as GPSSpotManager;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -178,12 +202,11 @@ namespace TPPacket.Packet
 
         private DataUpdatePacket()
         {
-            
+            _packetType = PacketType.UpdateDataReq;
         }
 
-        public DataUpdatePacket(ModeType _modeType)
+        public DataUpdatePacket(ModeType _modeType) : this()
         {
-            _packetType = PacketType.UpdateDataReq;
             modeType = _modeType;
         }
     }
@@ -195,12 +218,11 @@ namespace TPPacket.Packet
 
         private DataUpdatedPacket()
         {
-
+            _packetType = PacketType.UpdateDataChanged;
         }
 
-        public DataUpdatedPacket(ModeType _modeType)
+        public DataUpdatedPacket(ModeType _modeType) : this()
         {
-            _packetType = PacketType.UpdateDataChanged;
             modeType = _modeType;
         }
     }
@@ -213,12 +235,11 @@ namespace TPPacket.Packet
 
         private ConsoleUpdatePacket()
         {
-
+            _packetType = PacketType.UpdateConsoleModeReq;
         }
 
-        public ConsoleUpdatePacket(ConsoleMode _consoleMode, ulong _TargetBot)
+        public ConsoleUpdatePacket(ConsoleMode _consoleMode, ulong _TargetBot) : this()
         {
-            _packetType = PacketType.UpdateConsoleModeReq;
             consoleMode = _consoleMode;
             TargetBot = _TargetBot;
         }
@@ -231,12 +252,11 @@ namespace TPPacket.Packet
 
         private ConsoleUpdatedPacket()
         {
-
+            _packetType = PacketType.UpdateConsoleModeChanged;
         }
 
-        public ConsoleUpdatedPacket(ConsoleMode _consoleMode)
+        public ConsoleUpdatedPacket(ConsoleMode _consoleMode) : this()
         {
-            _packetType = PacketType.UpdateConsoleModeChanged;
             consoleMode = _consoleMode;
         }
     }
@@ -249,12 +269,11 @@ namespace TPPacket.Packet
 
         private UniversalCommandPacket()
         {
-
+            _packetType = PacketType.UniversalCommand;
         }
 
-        public UniversalCommandPacket(KeyType _keyType, string _key)
+        public UniversalCommandPacket(KeyType _keyType, string _key) : this()
         {
-            _packetType = PacketType.UniversalCommand;
             keyType = _keyType;
             key = _key;
         }
@@ -276,12 +295,11 @@ namespace TPPacket.Packet
         
         private ClientinfoPacket()
         {
-
+            _packetType = PacketType.ClientsInfo;
         }
 
-        public ClientinfoPacket(ClientInfo[] clientsInfo)
+        public ClientinfoPacket(ClientInfo[] clientsInfo) : this()
         {
-            _packetType = PacketType.ClientsInfo;
             ClientsInfo = clientsInfo;
         }
     }
