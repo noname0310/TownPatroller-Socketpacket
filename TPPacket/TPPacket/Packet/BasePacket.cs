@@ -27,6 +27,8 @@ namespace TPPacket.Packet
         ConnectionStat,
         CamFrame,
         CamConfig,
+        CamResolutionReq,
+        CamResolution,
         CamReceived,
         CarStatus,
         CarStatusReceived,

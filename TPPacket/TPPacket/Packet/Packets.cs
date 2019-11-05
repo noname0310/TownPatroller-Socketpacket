@@ -50,6 +50,38 @@ namespace TPPacket.Packet
     }
 
     [Serializable]
+    public class CamResolutionReqPacket : BasePacket
+    {
+        public readonly int Resolution;
+
+        private CamResolutionReqPacket()
+        {
+            _packetType = PacketType.CamResolutionReq;
+        }
+
+        public CamResolutionReqPacket(int resolution) : this()
+        {
+            Resolution = resolution;
+        }
+    }
+
+    [Serializable]
+    public class CamResolutionPacket : BasePacket
+    {
+        public readonly int Resolution;
+
+        private CamResolutionPacket()
+        {
+            _packetType = PacketType.CamResolution;
+        }
+
+        public CamResolutionPacket(int resolution) : this()
+        {
+            Resolution = resolution;
+        }
+    }
+
+    [Serializable]
     public class CamConfigPacket : BasePacket
     {
         public readonly CamaraConfigType camaraConfigType;

@@ -25,9 +25,12 @@ namespace TPPacket.Serializer
 
         ~PacketSerializer()
         {
-            SerializeMS.Close();
-            SerializeMS.Dispose();
-            SerializeMS = null;
+            if (SerializeMS != null)
+            {
+                SerializeMS.Close();
+                SerializeMS.Dispose();
+                SerializeMS = null;
+            }
         }
 
         public void Serialize(object obj)
