@@ -5,96 +5,98 @@ using TPPacket.Packet;
 
 namespace TPPacket.Serializer
 {
-    public class PacketSerializer
+    public static class PacketHeaderSize
     {
-        private int PacketBufferSize;//1024 * 3
-        private int SegmentBufferSize;//1024 * 4
-        public MemoryStream SerializeMS;
+        public const int HeaderSize = 4 * 3;//byte
+    }
+
+    public class PacketSerializer//header = 4byte * 3
+    {
+        private int PacketBufferSize;//1012       SegmentBufferSize = 1024
+        public MemoryStream PacketMS;
         public int SegmentCount;
-        private int CourrentCount;
         public int CourrentSegmentID;
 
-        public PacketSerializer(int _PacketBufferSize, int _SegmentBufferSize)
+        public PacketSerializer(int _PacketBufferSize)
         {
             PacketBufferSize = _PacketBufferSize;
-            SegmentBufferSize = _SegmentBufferSize;
             SegmentCount = -1;
-            CourrentCount = 0;
             CourrentSegmentID = 0;
         }
 
         ~PacketSerializer()
         {
-            if (SerializeMS != null)
+            if (PacketMS != null)
             {
-                SerializeMS.Close();
-                SerializeMS.Dispose();
-                SerializeMS = null;
+                PacketMS.Close();
+                PacketMS.Dispose();
+                PacketMS = null;
             }
         }
 
         public void Serialize(object obj)
         {
-            if (SerializeMS != null)
+            if (PacketMS != null)
             {
-                SerializeMS.Close();
-                SerializeMS.Dispose();
-                SerializeMS = null;
+                PacketMS.Close();
+                PacketMS.Dispose();
+                PacketMS = null;
             }
             
-            SerializeMS = new MemoryStream();
+            PacketMS = new MemoryStream();
             BinaryFormatter bf = new BinaryFormatter();
 
-            bf.Serialize(SerializeMS, obj);
-            SerializeMS.Position = 0;
+            bf.Serialize(PacketMS, obj);
+            PacketMS.Position = 0;
 
-            SegmentCount = (int)Math.Ceiling((double)SerializeMS.Length/(double)PacketBufferSize);
-            CourrentCount = 0;
+            SegmentCount = (int)Math.Ceiling(PacketMS.Length/(double)PacketBufferSize);
             if (CourrentSegmentID == 1000)
                 CourrentSegmentID = 1;
             else
                 CourrentSegmentID++;
         }
 
-        public long SerializeSingle(byte[] buffer, object obj)//buffer = out
+        public void AddHeader(byte[] header, byte[] out_segment)//out_segment)//buffer = out
         {
-            MemoryStream ms = new MemoryStream();
-            BinaryFormatter bf = new BinaryFormatter();
-
-            bf.Serialize(ms, obj);
-            ms.Position = 0;
-
-            if (ms.Length > buffer.Length)
-            {
-                throw new SystemException("buffer is too small to serialize object! memorystream (" + ms.Length + " byte)" + " buffer (" + buffer.Length + " byte)");
-            }
-
-            ms.Read(buffer, 0, buffer.Length);
-
-            long size = ms.Length;
-
-            ms.Close();
-            ms.Dispose();
-
-            return size;
+            Buffer.BlockCopy(header, 0, out_segment, 0, header.Length);
         }
 
-        public int GetSerializedSegment(byte[] buffer)//buffer = out, 1024 * 4
+        public int GetSerializedSegment(byte[] out_segment)//out_segment = out, 1024
         {
-            CourrentCount++;
+            byte[] Header = new byte[4 * 3];
 
-            byte[] PacketBuffer = new byte[PacketBufferSize];
-            int result = SerializeMS.Read(PacketBuffer, 0, PacketBuffer.Length);
-            Segment segment = new Segment(CourrentSegmentID, SegmentCount, CourrentCount, PacketBuffer);
-            SerializeSingle(buffer, segment);
-            return result;
+            byte[] CourrentSegmentIDByte = BitConverter.GetBytes(CourrentSegmentID);
+            Buffer.BlockCopy(CourrentSegmentIDByte, 0, Header, 4, CourrentSegmentIDByte.Length);/*add CourrentSegmentID to header*/
+            byte[] SegmentCountByte = BitConverter.GetBytes(SegmentCount);
+            Buffer.BlockCopy(SegmentCountByte, 0, Header, 4 * 2, SegmentCountByte.Length);/*add SegmentCount to header*/
+
+            int readbytes;
+
+            if ((PacketMS.Length - PacketMS.Position) >= PacketBufferSize)
+            {
+                byte[] SegmentLengthByte = BitConverter.GetBytes(PacketBufferSize);
+                Buffer.BlockCopy(SegmentLengthByte, 0, Header, 0, SegmentLengthByte.Length);/*add lengthinfo to header*/
+
+                readbytes = PacketMS.Read(out_segment, Header.Length, PacketBufferSize);/*write segment at out_segment  offset 12byte*/
+            }
+            else
+            {
+                byte[] SegmentLengthByte = BitConverter.GetBytes((int)PacketMS.Length - (int)PacketMS.Position);
+                Buffer.BlockCopy(SegmentLengthByte, 0, Header, 0, SegmentLengthByte.Length);/*add lengthinfo to header*/
+
+                readbytes = PacketMS.Read(out_segment, Header.Length, (int)PacketMS.Length - (int)PacketMS.Position);/*write segment at out_segment  offset 12byte*/
+            }
+
+            AddHeader(Header, out_segment);
+
+            return Header.Length + readbytes;/*return full segment length*/
         }
 
         public void Clear()
         {
-            SerializeMS.Close();
-            SerializeMS.Dispose();
-            SerializeMS = null;
+            PacketMS.Close();
+            PacketMS.Dispose();
+            PacketMS = null;
         }
     }
 }

@@ -68,7 +68,6 @@
     <Compile Include="Serializer\PacketDeserializer.cs" />
     <Compile Include="Serializer\PacketSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Packet\Segment.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

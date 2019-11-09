@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using TPPacket.Packet;
+using TPPacket.Serializer;
 
 namespace TPPacket.PacketManager
 {
@@ -18,38 +19,40 @@ namespace TPPacket.PacketManager
             segmentCollecters = new Dictionary<int, SegmentCollecter>();
         }
 
-        public void AddSegment(Segment segment)
+        public void AddSegment(byte[] segment)
         {
-            if(segment.SegmentID >= 1000)
+            HeaderInfo headerInfo = PacketDeserializer.ParseHeader(segment);
+
+            if (headerInfo.CourrentSegmentID >= 1000)
             {
                 if (segmentCollecters.Count > 0)
                     segmentCollecters.Clear();
 
                 if(LastCollecter == null)
                 {
-                    LastCollecter = new SegmentCollecter(segment.SegmentCount);
+                    LastCollecter = new SegmentCollecter(headerInfo.SegmentCount, headerInfo.CourrentSegmentID);
                     LastCollecter.OnDataInvoke += PacketReciver_OnDataInvoke;
                 }
-                LastCollecter.AddSegment(segment);
+                LastCollecter.AddSegment(segment, PacketHeaderSize.HeaderSize);
                 return;
             }
 
-            if(segment.SegmentID == 1)
+            if(headerInfo.CourrentSegmentID == 1)
             {
                 LastCollecter = null;
             }
 
-            if(segmentCollecters.ContainsKey(segment.SegmentID))
+            if(segmentCollecters.ContainsKey(headerInfo.CourrentSegmentID))
             {
-                segmentCollecters[segment.SegmentID].AddSegment(segment);
+                segmentCollecters[headerInfo.CourrentSegmentID].AddSegment(segment, PacketHeaderSize.HeaderSize);
             }
             else
             {
-                SegmentCollecter segmentCollecter = new SegmentCollecter(segment.SegmentCount);
+                SegmentCollecter segmentCollecter = new SegmentCollecter(headerInfo.SegmentCount, headerInfo.CourrentSegmentID);
                 segmentCollecter.OnDataInvoke += PacketReciver_OnDataInvoke;
-
-                segmentCollecter.AddSegment(segment);
-                segmentCollecters.Add(segment.SegmentID, segmentCollecter);
+                
+                segmentCollecter.AddSegment(segment, PacketHeaderSize.HeaderSize);
+                segmentCollecters.Add(headerInfo.CourrentSegmentID, segmentCollecter);
             }
         }
 

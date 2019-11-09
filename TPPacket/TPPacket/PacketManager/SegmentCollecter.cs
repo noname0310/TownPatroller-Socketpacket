@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,24 +13,41 @@ namespace TPPacket.PacketManager
         public delegate void DataInvoked(BasePacket basePacket, int segmentID);
         public event DataInvoked OnDataInvoke;
 
-        private Segment[] segments;
+        private MemoryStream segments;
+        private int SegmentCount;
         private int AddCount;
+        private int SegmentID;
 
-        public SegmentCollecter(int segmentcount)
+        public SegmentCollecter(int segmentcount, int segmentid)
         {
             AddCount = 0;
-            segments = new Segment[segmentcount];
+            SegmentCount = segmentcount;
+            SegmentID = segmentid;
+            segments = new MemoryStream();
         }
 
-        public void AddSegment(Segment _segment)
+        ~ SegmentCollecter()
         {
-            segments[_segment.CourrentCount - 1] = _segment;
+            if (segments != null)
+            {
+                segments.Close();
+                segments.Dispose();
+                segments = null;
+            }
+        }
+
+        public void AddSegment(byte[] segment, int offset)
+        {
+            segments.Write(segment, offset, segment.Length - offset);
             AddCount++;
 
-            if(AddCount == segments.Length)
+            if(AddCount == SegmentCount)
             {
-                BasePacket basePacket = PacketDeserializer.DeserializeFromSegment(segments);
-                OnDataInvoke?.Invoke(basePacket, _segment.SegmentID);
+                BasePacket basePacket = (BasePacket)PacketDeserializer.Deserialize(segments);
+                OnDataInvoke?.Invoke(basePacket, SegmentID);
+                segments.Close();
+                segments.Dispose();
+                segments = null;
             }
         }
     }
