@@ -27,6 +27,15 @@ namespace TPPacket.Class
         public readonly bool RB_LED;
         public readonly bool LB_LED;
 
+        public ReqCarDevice(byte r_motorpower, byte l_motorpower)
+        {
+            R_motorpower = r_motorpower;
+            L_motorpower = l_motorpower;
+
+            R_motorpowerChanged = true;
+            L_motorpowerChanged = true;
+        }
+
         public ReqCarDevice(byte r_motorpower, byte l_motorpower, bool r_motorDIR, bool l_motorDIR)
         {
             R_motorpower = r_motorpower;
